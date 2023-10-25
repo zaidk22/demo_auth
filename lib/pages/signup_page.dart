@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:demo_auth/dbHelper/mongoDb.dart';
+import 'package:demo_auth/models/user.dart';
 import 'package:demo_auth/routes/routes.gr.dart';
 import 'package:demo_auth/utils/custom_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:mongo_dart/mongo_dart.dart' as M;
 import '../utils/validartors.dart';
 
 @RoutePage()
@@ -16,13 +18,14 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool isChecked = false;
-     bool _obscureText = true;
-    final _formKey = GlobalKey<FormState>();
-     void _togglePasswordVisibility() {
+  bool _obscureText = true;
+  final _formKey = GlobalKey<FormState>();
+  void _togglePasswordVisibility() {
     setState(() {
       _obscureText = !_obscureText;
     });
-     }
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.sizeOf(context);
@@ -49,8 +52,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 alignment: Alignment.center,
                 child: Text(
                   "Create Account",
-                  style:
-                      GoogleFonts.ptSansNarrow(color: Colors.blue, fontSize: 30),
+                  style: GoogleFonts.ptSansNarrow(
+                      color: Colors.blue, fontSize: 30),
                 ),
               ),
               Align(
@@ -61,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       GoogleFonts.cagliostro(color: Colors.black, fontSize: 22),
                 ),
               ),
-               const SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               const Text("Full name"),
@@ -69,7 +72,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 hintText: "",
                 textStyle1: GoogleFonts.abel(),
                 validator: Validators.name,
-             
               ),
               const SizedBox(
                 height: 5,
@@ -86,31 +88,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const Text("Password"),
               CustomFormField(
-                  hintText: "Password",
-                  isObscureText: _obscureText,
-                  textStyle1: GoogleFonts.abel(),
-                  Icons:  _obscureText ? Icons.visibility : Icons.visibility_off,
-                  validator: Validators.password,
-                  onIconTap: () {
-                    _togglePasswordVisibility();
-                  },
-                ),
-                  Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Checkbox(
-        value: isChecked,
-        onChanged: (value) {
-          setState(() {
-            isChecked = value!;
-          });
-        },
-          ),
-          const Text('Remember me'),
-        ],
-      ),
-      
-              
+                hintText: "Password",
+                isObscureText: _obscureText,
+                textStyle1: GoogleFonts.abel(),
+                Icons: _obscureText ? Icons.visibility : Icons.visibility_off,
+                validator: Validators.password,
+                onIconTap: () {
+                  _togglePasswordVisibility();
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Checkbox(
+                    value: isChecked,
+                    onChanged: (value) {
+                      setState(() {
+                        isChecked = value!;
+                      });
+                    },
+                  ),
+                  const Text('Remember me'),
+                ],
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -121,10 +121,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)))),
                   onPressed: () {
-                    if(_formKey.currentState!.validate()){
-                      AutoRouter.of(context).push(HomeRoute());
-                    }
-                  
+                   // if (_formKey.currentState!.validate()) {
+                      // AutoRouter.of(context).push(HomeRoute());
+                      _insertData();
+                   // }
                   },
                   child: const Text(
                     'Continue',
@@ -133,7 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(
                 height: 10,
               ),
-             const SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               RichText(
@@ -145,16 +145,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fontSize: 16,
                   ),
                   children: <TextSpan>[
-                  
                     TextSpan(
                       text: 'Terms and Conditions',
-                      
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.blue,
                         fontSize: 16,
                         decoration: TextDecoration.underline,
-                        
                       ),
                     ),
                   ],
@@ -165,5 +162,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _insertData() async {
+    var _id = M.ObjectId();
+    final data = UserModel(
+        id: _id, email: 'test@123', fullName: 'test', password: '123456');
+    var result = await MongoDB.insert(data);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("$result")));
+    print(result);
   }
 }
