@@ -8,7 +8,9 @@ class CustomFormField extends StatelessWidget {
     this.validator,
     this.onChange,
     this.Icons,
-    required this.textStyle1
+    this.onIconTap,
+    required this.textStyle1,
+    this.isObscureText
   }) : super(key: key);
   final String hintText;
   final List<TextInputFormatter>? inputFormatters;
@@ -16,13 +18,15 @@ class CustomFormField extends StatelessWidget {
   final void Function(String?)? onChange;
   final IconData ? Icons;
   final TextStyle textStyle1;
+  final VoidCallback? onIconTap;
+  final bool? isObscureText;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
-      
+       obscureText: isObscureText?? false,
         style: textStyle1,
         inputFormatters: inputFormatters,
           validator: (inputString) {
@@ -35,7 +39,9 @@ class CustomFormField extends StatelessWidget {
         hintStyle: textStyle1,
        // labelStyle: textStyle1,
 //  prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Colors.red) : null,
-  suffixIcon: Icons != null ? Icon(Icons, color: Colors.red) : null,
+  suffixIcon: Icons != null ? IconButton(
+    onPressed:onIconTap,
+    icon: Icon(Icons), color: Colors.red) : null,
        border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
                  

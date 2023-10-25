@@ -33,11 +33,12 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.1.0
+  mongo_dart: ^0.9.3
 
 dev_dependencies:
+  auto_route_generator: null
+  build_runner: null
   flutter_lints: ^2.0.0
-  auto_route_generator:
-  build_runner:
   flutter_test:
     sdk: flutter
 

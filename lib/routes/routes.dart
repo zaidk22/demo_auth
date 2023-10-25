@@ -14,5 +14,9 @@ class AppRouter extends $AppRouter {
             page: SignUpRoute.page,
             transitionsBuilder: TransitionsBuilders.slideLeft,
             durationInMilliseconds: 500),
+        CustomRoute(
+            page: HomeRoute.page,
+            transitionsBuilder: TransitionsBuilders.slideLeft,
+            durationInMilliseconds: 500),
       ];
 }
