@@ -34,19 +34,6 @@ class Validators {
     return null;
   }
 
-  static String? pinFieldLength(
-    String? value,
-     {
-    String? message,
-  }) {
-    if (value == null) {
-      return message ?? 'This field is required';
-    } else if (value.length < 6) {
-      return message ?? "Enter a valid OTP";
-    }
-
-    return null;
-  }
 
   static String? email(
     String? value,
@@ -64,47 +51,9 @@ class Validators {
     return null;
   }
 
-  static String? age(
-    String? value,
 
-  ) {
-    value = value!.trim();
-    if (value.isEmpty) {
-      return "Please enter a valid age";
-    } else if (value.length > 3) {
-      return "Age range cannot be more than 125.";
-    }
 
-    return null;
-  }
 
-  static String? pincode(
-    String? value,
-   
-  ) {
-    value = value!.trim();
-    if (value.isEmpty) {
-      return "Please enter a valid pincode";
-    } else if (value.length < 6) {
-      return "Invalid pincode.";
-    }
-
-    return null;
-  }
-
-  static String? phone(
-    String? value,
-  
-  ) {
-    value = value!.trim();
-    if (value.isEmpty) {
-      return 'Please enter phone number';
-    } else if (value.length < 10) {
-      return 'Please enter valid phone number';
-    }
-
-    return null;
-  }
 
   static String? password(
     String? value,
@@ -128,9 +77,11 @@ class Validators {
     value = value!.trim();
     if (value.isEmpty) {
       return 'This field is required';
-    } else if (!Validators._nameRegex.hasMatch(value)) {
-      return 'Invalid name';
-    } else if (value.length > 100) {
+    } 
+    // else if (!Validators._nameRegex.hasMatch(value)) {
+    //   return 'Invalid name';
+    // } 
+    else if (value.length > 100) {
       return 'This field cannot exceed 100 characters';
     }
 

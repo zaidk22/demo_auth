@@ -31,7 +31,7 @@ class MongoDB {
     var result = await userCollection.insertOne(data.toJson());
 
     if (result.isSuccess) {
-      return "Data Inserted";
+      return "Account is created";
     } else {
       return "Something went wrong";
     }

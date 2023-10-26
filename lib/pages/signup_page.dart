@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:demo_auth/dbHelper/mongoDb.dart';
+import 'package:demo_auth/dbHelper/secure_storage.dart';
 import 'package:demo_auth/models/user.dart';
+import 'package:demo_auth/routes/routes.gr.dart';
 import 'package:demo_auth/utils/custom_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -131,6 +133,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     if (_formKey.currentState!.validate()) {
                       _insertData(_userNameController.text,
                           _nameController.text, _passwordController.text);
+                          if(isChecked){
+                            storeData(_userNameController.text, _passwordController.text);
+                          }
                     }
                   },
                   child: const Text(
@@ -180,6 +185,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var result = await MongoDB.insert(data);
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text("$result")));
-    print(result);
+        if(result=="Account is created"){
+          AutoRouter.of(context).push(LoginRoute());
+        }
+   
+  }
+  void storeData(String userName,String password) async{
+  LocalDB.storeCredentials(userName, password);
+  
+
   }
 }

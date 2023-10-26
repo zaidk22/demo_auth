@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:demo_auth/dbHelper/mongoDb.dart';
+import 'package:demo_auth/dbHelper/secure_storage.dart';
 import 'package:demo_auth/routes/routes.gr.dart';
 import 'package:demo_auth/utils/custom_form_field.dart';
 import 'package:flutter/gestures.dart';
@@ -28,10 +29,21 @@ class _LoginScreenState extends State<LoginScreen> {
       _obscureText = !_obscureText;
     });
   }
+   
+@override
+  void initState() {
+  
+    super.initState();
+  }
 
+  void getData() async{
+   _passwordController.text =   await LocalDB.getPassword() ??"";
+    _userNameController.text =   await LocalDB.getUsername() ??"";
+  }
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.sizeOf(context);
+    getData();
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -117,10 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)))),
                   onPressed: () async {
-                    // if (_formKey.currentState!.validate()) {
-                    // AutoRouter.of(context)
-                    //                   .push(const HomeRoute());
-                    //           }
+                     if (_formKey.currentState!.validate()) {
+                 
                     var result = await MongoDB.findUser(
                         _userNameController.text, _passwordController.text);
                     if (result.success == true) {
@@ -128,6 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     else{
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result?.message ??"")));
+                    }
                     }
                   },
                   child: const Text(
