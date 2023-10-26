@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:demo_auth/dbHelper/mongoDb.dart';
 import 'package:demo_auth/models/user.dart';
-import 'package:demo_auth/routes/routes.gr.dart';
 import 'package:demo_auth/utils/custom_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,6 +18,9 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   bool isChecked = false;
   bool _obscureText = true;
+   final TextEditingController _nameController = TextEditingController();
+    final TextEditingController _userNameController = TextEditingController();
+    final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   void _togglePasswordVisibility() {
     setState(() {
@@ -29,6 +31,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.sizeOf(context);
+   
+
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -70,6 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const Text("Full name"),
               CustomFormField(
                 hintText: "",
+                controller: _nameController,
                 textStyle1: GoogleFonts.abel(),
                 validator: Validators.name,
               ),
@@ -79,6 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const Text("Username"),
               CustomFormField(
                 hintText: "UserName",
+                controller: _userNameController,
                 textStyle1: GoogleFonts.abel(),
                 Icons: Icons.check_rounded,
                 validator: Validators.name,
@@ -89,6 +95,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const Text("Password"),
               CustomFormField(
                 hintText: "Password",
+                controller: _passwordController,
                 isObscureText: _obscureText,
                 textStyle1: GoogleFonts.abel(),
                 Icons: _obscureText ? Icons.visibility : Icons.visibility_off,
@@ -121,10 +128,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)))),
                   onPressed: () {
-                   // if (_formKey.currentState!.validate()) {
-                      // AutoRouter.of(context).push(HomeRoute());
-                      _insertData();
-                   // }
+                    if (_formKey.currentState!.validate()) {
+                      _insertData(_userNameController.text,
+                          _nameController.text, _passwordController.text);
+                    }
                   },
                   child: const Text(
                     'Continue',
@@ -164,10 +171,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future<void> _insertData() async {
+  Future<void> _insertData(
+      String? userName, String? fullName, String? password) async {
     var _id = M.ObjectId();
+
     final data = UserModel(
-        id: _id, email: 'test@123', fullName: 'test', password: '123456');
+        id: _id, userName: userName!, fullName: fullName!, password: password!);
     var result = await MongoDB.insert(data);
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text("$result")));
